@@ -1,0 +1,26 @@
+{
+  "request": {
+    "urlPathPattern": "/v1/blacklist",
+    "method": "GET",
+    "queryParameters": {
+      "username": {
+        "matches": "(?i).*black.*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "username": "{{request.query.username}}",
+      "isBlacklisted": true,
+      "reason": "Suspicious"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  },
+  "priority": 1
+}

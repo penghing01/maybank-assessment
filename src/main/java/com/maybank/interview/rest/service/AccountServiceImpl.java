@@ -23,10 +23,15 @@ public class AccountServiceImpl implements AccountService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final DBBankAccountService dbBankAccountService;
     private final ModelMapper modelMapper;
+    private final ClientService clientService;
 
     @Override
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) {
         LOGGER.info("Start bank account creation: {}", createAccountRequest);
+
+        // Validate the user by calling to another microservice
+        clientService.validateUser(createAccountRequest.getAccountHolder());
+
         // This one is just a random number, the real case should be some logic to get a real available account number
         var accountId = IdHelper.generateNumericId();
         BankAccount bankAccount = modelMapper.map(createAccountRequest, BankAccount.class);

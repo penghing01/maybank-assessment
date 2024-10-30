@@ -23,6 +23,9 @@ This guide will help you deploy a local database using Docker.
 
 To start, run `docker-compose up` to launch the database locally. Once the database is up and running, you will need to **MANUALLY** create a database named **TESTDB**.
 
+A wiremock server will be started together when running docker-compose up. If you don't want to run docker in your local. Please look for the wiremock folder and unzip it. 
+Run the `run wiremock.bat`
+
 ### Run the application
 Assuming you are using IntelliJ, run the following commands to clean and compile your project:
 

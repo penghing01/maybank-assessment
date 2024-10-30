@@ -22,7 +22,7 @@ spring:
 integration:
   blacklist:
     name: blacklist-client
-    url: ${INTEGRATION_BLACKLIST_URL:http://localhost:9000}
+    url: ${INTEGRATION_BLACKLIST_URL:http://localhost:9001}
 
 logging:
   level:
