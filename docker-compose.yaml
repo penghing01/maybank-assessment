@@ -1,0 +1,19 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+  wiremock:
+    image: wiremock/wiremock:latest
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./src/main/resources/wiremock/mappings:/home/wiremock/mappings
+    command:
+      - "--port=9001"
+      - "--verbose"
+      - "--global-response-templating"

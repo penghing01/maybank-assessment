@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: Bank API
+  version: 1.0.0
+  description: API for managing bank accounts.
+tags:
+  - name: account
+    description: Account operation for Banks
+
+paths:
+  /v1/accounts:
+    post:
+      tags:
+        - account
+      summary: Create a new bank account
+      operationId: createBankAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequest'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAccountResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+
+    get:
+      tags:
+        - account
+      summary: Retrieve all bank accounts
+      operationId: getAllBankAccounts
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            description: Page number
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            description: Number of records per page
+      responses:
+        '200':
+          description: A list of bank accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllAccountsResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+
+components:
+  schemas:
+    CreateAccountRequest:
+      type: object
+      properties:
+        accountHolder:
+          type: string
+          example: "John Doe"
+        accountType:
+          type: string
+          example: "savings"
+        initialDeposit:
+          type: number
+          format: float
+          minimum: 200.00
+          example: 1000.00
+      required:
+        - accountHolder
+        - accountType
+    CreateAccountResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+          example: "123456789"
+        accountHolder:
+          type: string
+          example: "John Doe"
+        accountType:
+          type: string
+          example: "savings"
+        balance:
+          type: number
+          format: float
+          example: 1000.00
+    GetAllAccountsResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateAccountResponse'
+        totalPages:
+          type: integer
+          example: 5
+        totalElements:
+          type: integer
+          example: 50
+        size:
+          type: integer
+          example: 10
+        number:
+          type: integer
+          example: 0
+    RequestError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: '2024-03-14T11:11:13.528156500'
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: Bad Request
+        message:
+          type: string
+          example: Invalid account Type
+        path:
+          type: string
+          example: /v1/accounts

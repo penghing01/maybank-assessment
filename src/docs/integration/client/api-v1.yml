@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: Blacklist API
+  version: 1.0.0
+  description: API to check if a user is blacklisted based on their username.
+tags:
+  - name: blacklist
+
+paths:
+  /v1/blacklist:
+    get:
+      tags:
+        - blacklist
+      summary: Check if a user is blacklisted
+      description: Checks if a given username is blacklisted.
+      operationId: checkUserBlacklistStatus
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Username to check in the blacklist.
+      responses:
+        '200':
+          description: Successful response indicating the blacklist status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlacklistCheckResponse'
+        '400':
+          description: Invalid request (e.g., missing or invalid username)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+
+components:
+  schemas:
+    BlacklistCheckResponse:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "john_doe"
+        isBlacklisted:
+          type: boolean
+          example: true
+        reason:
+          type: string
+          example: "Suspicious activity detected."
+          nullable: true
+      required:
+        - username
+        - isBlacklisted
+
+    RequestError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2024-11-01T12:30:00Z"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Invalid username"
+        path:
+          type: string
+          example: "/v1/blacklist/check"
