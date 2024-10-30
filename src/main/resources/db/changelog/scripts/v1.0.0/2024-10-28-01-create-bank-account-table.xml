@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2024-10-28-01" author="penghing">
+        <createTable tableName="bank_account">
+            <column name="account_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_holder" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="decimal(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="SYSTEM" name="created_by" type="varchar(25)"/>
+            <column defaultValue="SYSTEM" name="updated_by" type="varchar(25)"/>
+            <column name="created_at" type="datetimeoffset" defaultValueComputed="SYSDATETIMEOFFSET()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetimeoffset" defaultValueComputed="SYSDATETIMEOFFSET()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Optional: Trigger to auto-update updated_at column -->
+        <sql>
+            CREATE TRIGGER trg_UpdateTimestamp
+            ON bank_account
+            AFTER UPDATE
+            AS
+            BEGIN
+            SET NOCOUNT ON;
+            UPDATE bank_account
+            SET updated_at = SYSDATETIMEOFFSET()
+            FROM INSERTED
+            WHERE bank_account.account_id = INSERTED.account_id;
+            END
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

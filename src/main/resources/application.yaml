@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=TESTDB;encrypt=true;trustServerCertificate=true;}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:YourSecurePassword123}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+  application:
+    name: maybank-assessment
+
+integration:
+  blacklist:
+    name: blacklist-client
+    url: ${INTEGRATION_BLACKLIST_URL:http://localhost:9000}
+
+logging:
+  level:
+    org.zalando.logbook: TRACE
+
+logbook:
+  filter:
+    header:
+      exclude:
+        user-agent: ELB-HealthChecker/2.0
+  obfuscate:
+    headers:
+      - Authorization
+    parameters:
+      -
+    json-body-fields:
+      -
+    replacement: xxxxx
+  exclude:
+    - "/actuator/**"
+    - "/"
