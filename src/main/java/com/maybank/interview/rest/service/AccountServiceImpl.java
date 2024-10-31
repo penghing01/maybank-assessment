@@ -7,6 +7,7 @@ import com.maybank.interview.web.generated.model.CreateAccountRequest;
 import com.maybank.interview.web.generated.model.CreateAccountResponse;
 import com.maybank.interview.web.generated.model.GetAllAccountsResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -19,15 +20,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
-    private static final Logger LOGGER = LogManager.getLogger();
     private final DBBankAccountService dbBankAccountService;
     private final ModelMapper modelMapper;
     private final ClientService clientService;
 
     @Override
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) {
-        LOGGER.info("Start bank account creation: {}", createAccountRequest);
+        log.info("Start bank account creation: {}", createAccountRequest);
 
         // Validate the user by calling to another microservice
         clientService.validateUser(createAccountRequest.getAccountHolder());
@@ -39,6 +40,7 @@ public class AccountServiceImpl implements AccountService {
         bankAccount.setAccountType(AccountType.valueOf(createAccountRequest.getAccountType()));
         bankAccount.setBalance(BigDecimal.valueOf(createAccountRequest.getInitialDeposit()));
         dbBankAccountService.createBankAccount(bankAccount);
+        log.info("Bank account created with account ID: {}", accountId);
         return new CreateAccountResponse()
                 .accountHolder(createAccountRequest.getAccountHolder())
                 .accountId(accountId)
@@ -61,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         long totalElements = accounts.size(); // Get total number of records
         int totalPages = (int) Math.ceil((double) totalElements / size); // Calculate total pages
 
+        log.info("Account list is successfully retrieved");
         // Create response
         return new GetAllAccountsResponse()
                 .content(accounts)
