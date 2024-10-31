@@ -6,10 +6,9 @@ import com.maybank.interview.util.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 
 @Service
@@ -19,14 +18,12 @@ public class DBBankAccountServiceImpl implements DBBankAccountService {
     private final BankAccountRepository bankAccountRepository;
 
     @Override
-    @Transactional
     public BankAccount createBankAccount(BankAccount bankAccount) {
         validateBankAccount(bankAccount);
         return bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    @Transactional
     public Page<BankAccount> findAll(Pageable pageable) {
         return bankAccountRepository.findAll(pageable);
     }

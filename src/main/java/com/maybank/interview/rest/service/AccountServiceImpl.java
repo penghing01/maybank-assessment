@@ -8,12 +8,11 @@ import com.maybank.interview.web.generated.model.CreateAccountResponse;
 import com.maybank.interview.web.generated.model.GetAllAccountsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,6 +26,7 @@ public class AccountServiceImpl implements AccountService {
     private final ClientService clientService;
 
     @Override
+    @Transactional
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) {
         log.info("Start bank account creation: {}", createAccountRequest);
 
@@ -49,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public GetAllAccountsResponse getAllBankAccounts(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 

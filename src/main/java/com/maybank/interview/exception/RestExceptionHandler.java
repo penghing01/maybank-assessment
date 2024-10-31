@@ -5,8 +5,7 @@ import com.maybank.interview.web.generated.model.RequestError;
 import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,11 +32,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
  * Rest exception handlers
  */
 @ControllerAdvice
+@Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger LOG = LogManager.getLogger(RestExceptionHandler.class);
 
     protected ResponseEntity<Object> handleRestBaseException(RestBaseException e, WebRequest request) {
-        LOG.error("Handling RestBaseException :  ", e);
+        log.error("Handling RestBaseException :  ", e);
         return ResponseEntity.badRequest().body(buildError(BAD_REQUEST, e.getMessage(), request));
     }
 
@@ -45,7 +44,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleConstraintViolationException(
             ConstraintViolationException e,
             WebRequest request) {
-        LOG.error("Handling ConstraintViolationException : {} ", e.getMessage());
+        log.error("Handling ConstraintViolationException : {} ", e.getMessage());
 
         String message = e.getConstraintViolations().size() > 1 ? e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
@@ -59,25 +58,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected final ResponseEntity<RequestError> handleRequestException(
             RequestException ex,
             WebRequest request) {
-        LOG.error("Hit Request Exception : {}", ex.getRequestError().getMessage());
+        log.error("Hit Request Exception : {}", ex.getRequestError().getMessage());
         return ResponseEntity.badRequest().body(buildError(BAD_REQUEST, ex.getRequestError().getMessage(), request));
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGenericError(Exception e, WebRequest request) {
-        LOG.error("Hit General Exception : ", e);
+        log.error("Hit General Exception : ", e);
         return ResponseEntity.internalServerError().body(buildError(INTERNAL_SERVER_ERROR, e.getMessage(), request));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Object> handleIllegalArgumentExceptionError(Exception e, WebRequest request) {
-        LOG.error("Hit IllegalArgumentException : ", e);
+        log.error("Hit IllegalArgumentException : ", e);
         return ResponseEntity.badRequest().body(buildError(BAD_REQUEST, e.getMessage(), request));
     }
 
     @ExceptionHandler(FeignException.class)
     protected ResponseEntity<Object> handleFeignException(Exception e, WebRequest request) {
-        LOG.error("Hit FeignException when performing request to client endpoint : ", e);
+        log.error("Hit FeignException when performing request to client endpoint : ", e);
         return ResponseEntity.badRequest().body(buildError(BAD_REQUEST, e.getMessage(), request));
     }
 
@@ -88,7 +87,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatusCode statusCode,
             WebRequest request) {
-        LOG.debug("Generating response for exception ", ex);
+        log.debug("Generating response for exception ", ex);
 
         if (ex.getCause() instanceof ConversionFailedException e && e.getCause() instanceof RestBaseException re) {
             return handleRestBaseException(re, request);
@@ -108,8 +107,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        // Log the error message
-        LOG.error("Handling MethodArgumentNotValidException: {}", ex.getMessage());
+        // log the error message
+        log.error("Handling MethodArgumentNotValidException: {}", ex.getMessage());
 
         // Collect validation errors
         Map<String, String> errors = new HashMap<>();
