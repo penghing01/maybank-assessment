@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "d2a755fc-9014-4457-9834-3c5533f57aee",
+		"name": "Maybank assessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16517495"
+	},
+	"item": [
+		{
+			"name": "Create bank account success",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accountHolder\": \"John Doe\",\r\n  \"accountType\": \"SAVING\",\r\n  \"initialDeposit\": 1000.00\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"accounts"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/v1/accounts\" \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"accountHolder\": \"John Doe\",\r\n  \"accountType\": \"savings\",\r\n  \"initialDeposit\": 1000.00\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Create bank account fialed due to blacklisted user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accountHolder\": \"Jonny Black\",\r\n  \"accountType\": \"SAVING\",\r\n  \"initialDeposit\": 1000.00\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"accounts"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/v1/accounts\" \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"accountHolder\": \"John Doe\",\r\n  \"accountType\": \"savings\",\r\n  \"initialDeposit\": 1000.00\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Create bank account random",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Arrays of possible first and last names\r",
+							"const firstNames = [\"Alice\", \"Bob\", \"Charlie\", \"Diana\", \"Edward\", \"Fiona\"];\r",
+							"const lastNames = [\"Smith\", \"Johnson\", \"Williams\", \"Brown\", \"Jones\", \"Garcia\"];\r",
+							"\r",
+							"// Select a random first and last name\r",
+							"const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];\r",
+							"const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];\r",
+							"\r",
+							"// Combine them to make a full name\r",
+							"const randomName = `${randomFirstName} ${randomLastName}`;\r",
+							"\r",
+							"// Generate a random deposit amount between 200 and 1000 (inclusive)\r",
+							"const randomDeposit = Math.floor(Math.random() * (1000 - 200 + 1)) + 200;\r",
+							"\r",
+							"// Select a random account type\r",
+							"const accountTypes = [\"SAVING\", \"CURRENT\"];\r",
+							"const randomAccountType = accountTypes[Math.floor(Math.random() * accountTypes.length)];\r",
+							"\r",
+							"// Set these values as environment variables\r",
+							"pm.environment.set(\"randomName\", randomName);\r",
+							"pm.environment.set(\"randomDeposit\", randomDeposit);\r",
+							"pm.environment.set(\"randomAccountType\", randomAccountType);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accountHolder\": \"{{randomName}}\",\r\n  \"accountType\": \"{{randomAccountType}}\",\r\n  \"initialDeposit\": {{randomDeposit}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"accounts"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/v1/accounts\" \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"accountHolder\": \"John Doe\",\r\n  \"accountType\": \"savings\",\r\n  \"initialDeposit\": 1000.00\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "get all bank accounts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"accounts"
+					]
+				},
+				"description": "Generated from cURL: curl -X GET \"http://localhost:8080/v1/accounts?page=0&size=10\" \\\r\n-H \"Accept: application/json\"\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "get all bank accounts with page and size",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v1/accounts?page=2&size=8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"accounts"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "size",
+							"value": "8"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X GET \"http://localhost:8080/v1/accounts?page=0&size=10\" \\\r\n-H \"Accept: application/json\"\r\n"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
