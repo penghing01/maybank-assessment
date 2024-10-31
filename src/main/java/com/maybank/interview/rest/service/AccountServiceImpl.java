@@ -49,7 +49,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
     public GetAllAccountsResponse getAllBankAccounts(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
