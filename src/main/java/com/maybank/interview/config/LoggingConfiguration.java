@@ -1,8 +1,7 @@
 package com.maybank.interview.config;
 
 import com.maybank.interview.util.ThreadLocalTraceUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +17,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Configuration
+@Slf4j
 public class LoggingConfiguration {
 
     public static final String MESS_X_TRACE_ID = "correlation";
-    private static final Logger LOGGER = LogManager.getLogger(LoggingConfiguration.class);
     @Value("${spring.application.name}")
     private String service;
 
@@ -34,7 +33,7 @@ public class LoggingConfiguration {
             ThreadLocalTraceUtils.storeThreadAttribute(MESS_X_TRACE_ID, currCorrelationId);
             return Optional.ofNullable(currCorrelationId).filter(StringUtils::hasText).orElseGet(() -> {
                 String correlationId = UUID.randomUUID().toString();
-                LOGGER.debug("Generated correlation id : {} ", correlationId);
+                log.debug("Generated correlation id : {} ", correlationId);
                 ThreadLocalTraceUtils.storeThreadAttribute(MESS_X_TRACE_ID, correlationId);
                 return correlationId;
             });
